@@ -1,0 +1,80 @@
+paths:
+  crsp_dsf: ./data/raw/crsp.dsf
+  crsp_dsedelist: ./data/raw/crsp_dsedelist.csv
+  crsp_dsenames: ./data/raw/crsp_dsenames.csv
+  ccm_link: ./data/raw/ccm_link.csv
+  comp_fundq: ./data/raw/comp_fundq.csv
+  comp_company_gics: ./data/raw/comp_company_gics.csv
+  comp_idxcst_his: ./data/raw/comp_idxcst_his.csv
+  sp500_proxy_membership: ./data/raw/sp500_proxy_membership.csv
+  ff_daily: ./data/raw/ff_daily.csv
+  treasury_1y: ./data/raw/treasury_1y.csv
+  treasury_10y: ./data/raw/treasury_10y.csv
+  vix: ./data/raw/vix.csv
+
+outputs:
+  processed_dir: ./data/processed
+
+universe:
+  start: "2018-01-01"
+  end:   "2024-12-31"
+  build_buffer_days: 252
+
+risk:
+  daily_vol_target: 0.0040
+  max_pair_vol_share: 0.25
+  vol_guard: 1.40
+  tc_bps: 7.0
+  slippage_bps: 3.0
+  vix_gate_on: false         # turn on only if you want it and vix path exists
+  vix_max: 35.0
+  pnl_clip_sigma: 3.0
+  turnover_budget: 0.20
+  dd_guard_on: true
+  dd_floor_pct: -0.10
+  dd_scale: 0.50
+  rv_control_on: true
+  rv_lookback_days: 60
+  rv_hot_threshold: 1.03
+  rv_alpha: 1.2
+  rv_min_scale: 0.60
+  rv_max_scale: 1.00
+
+backtest:
+  entry_z: 1.8
+  exit_z: 0.5
+  lag_days: 1
+  max_pairs_live: 120
+  per_name_cooldown_days: 1
+  per_pair_cooldown_days: 1
+  per_name_limit: 3
+  max_holding_days: 20
+
+enhancements:
+  rolling_beta_on: true
+  beta_window: 120
+  robust_z_on: false
+  reversion_eps: 0.00
+  resize_hysteresis_frac: 0.80
+  z_stop_mult: 1.15
+  flip_extra_z: 0.20
+  dsd_method: ewma
+  ewma_lambda: 0.985
+  dsd_window: 30
+
+diagnostics:
+  dump_engine_debug: true
+
+# Selection (used when you rebuild pairs.csv; safe, not aggressive)
+selection:
+  lookback_days: 504
+  min_overlap_days: 252
+  corr_min: 0.85
+  adf_alpha: 0.05
+  top_n: 400
+  same_sector_only: true
+  n_jobs: 4
+  top_k_per_name: 10
+  final_top_k_per_name: 4
+  require_factors: true
+  beta_window: 90
